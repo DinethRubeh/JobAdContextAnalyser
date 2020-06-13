@@ -81,7 +81,7 @@ def get_general_details():
 
     hyperlinks = []
 
-    for row in ad_rows:
+    for row in ad_rows[:10]:
         # find all <h1> tags from soup object (row)
         company_name = [name.text for name in row.find_all('h1')]
 
@@ -137,13 +137,8 @@ def save_general_details(job_details_df):
 
 
 def main():
-    import time
-    start_time = time.time()
-
     jobs_df = get_general_details()
     print(save_general_details(jobs_df))
-
-    print((time.time() - start_time))
 
 if __name__ == "__main__":
     main()
