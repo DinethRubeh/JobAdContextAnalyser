@@ -2,71 +2,104 @@ import os
 import re
 import config
 import requests
+import pandas as pd
 import urllib.request
 from bs4 import BeautifulSoup
 
 # base url to be added as a prefix to the image src
 base_url = config.url
+# images dir path
+image_cache_path = config.image_path
+# details dir path
+details_cache_path = config.ad_details_path
 
-def get_job_ad(url_array):
+def get_job_ad(url_df_row):
 
-    # iterate each hyperlink
-    for url_str in url_array:
-        # Append base_url as prefix
-        url = base_url + url_str
+    img_name = None
 
-        response = requests.get(url)
-        # soup object
-        soup = BeautifulSoup(response.content, "html.parser")
+    # get hyperlink of ad
+    url = url_df_row.ad_url
+    # get ref number of ad
+    ad_ref = url_df_row.ref_number
 
-        # filter div tag by class, then extract img tag
-        images = soup.find('div', attrs={'class':'job-holder'}).find_all("img", {"alt":""})
+    response = requests.get(url)
+    # soup object
+    soup = BeautifulSoup(response.content, "html.parser")
 
-        # iterate each image tag
-        for image in images:
-            # Append base_url as prefix
-            image_src = base_url + image["src"]
+    # filter div tag by class, then extract img tag
+    images = soup.find('div', attrs={'class':'job-holder'}).find_all("img", {"alt":""})
 
-            # replace space in url with "%20" (ASCII)
-            mod_image_src = image_src.replace(" ", "%20")
-            print(mod_image_src)
+    # get image src
+    image_src = [image["src"] for image in images]
+    
+    # if no ad image is available
+    if not image_src:
+        img_name = "no_image"
+    else:
+        # image src with base url
+        base_image_src = base_url + image_src[0]
 
-            # Save image
-            image_cache_path = config.image_path
-            
-            # checking whether cache path exists, if not make non-existing intermediate directory
+        # replace space in url with "%20" (ASCII)
+        mod_image_src = base_image_src.replace(" ", "%20")
+        
+        # create image name (ref number + image type)
+        # get image type from url
+        img_name = ad_ref + '.' + mod_image_src.rsplit('.', 1)[-1]
+
+        # images directory
+        image_cache_path = config.image_path
+        
+        # get image from url
+        img_request = requests.get(mod_image_src)
+
+        if img_request.status_code == 200:
+            # checking whether cache path exists
             if os.path.exists(image_cache_path):
-                urllib.request.urlretrieve(mod_image_src,os.path.basename(image_cache_path + mod_image_src))
+                # save image (wb - write binary permission)
+                with open(image_cache_path + img_name, 'wb') as fimage:
+                    fimage.write(img_request.content)
+            # if not make non-existing intermediate directory
             else:
                 os.makedirs(image_cache_path)
-                urllib.request.urlretrieve(mod_image_src,os.path.basename(image_cache_path + mod_image_src))
+                with open(image_cache_path + img_name, 'wb') as fimage:
+                    fimage.write(img_request.content)
 
-            urllib.request.urlretrieve(mod_image_src,os.path.basename(mod_image_src))
+    return img_name
 
-    return "Ads saved"
-
-def get_all_links():
+def get_general_details():
     
     sub_base_url = config.sub_url
-
+    # response
     sub_base_response = requests.get(sub_base_url)
-
+    # create a soup object
     soup = BeautifulSoup(sub_base_response.content, "html.parser")
 
-    # filter header containing hyperlink, then get hyperlink
-    # table = soup.find('table', attrs={'class':'tbldata_2 vbfa-table'})
-
+    # this <tr> tag with given attrs corresponds to ad rows
     ad_rows = soup.find_all('tr', attrs={'valign':'top'})
-    # print(ad_rows)
     
+    job_details = []
+
     hyperlinks = []
 
-    for row in ad_rows[:50]:
-        # find all <a> tags from soup object (row)
-        a_list = row.find_all('a', href=True)
+    for row in ad_rows:
+        # find all <h1> tags from soup object (row)
+        company_name = [name.text for name in row.find_all('h1')]
 
-        # select 'href from <a> tag
-        hlink = [a['href'] for a in a_list if a.text]
+        # job ref number <span> tag with id = 'hdnJC...'
+        ref_num = [num.text for num in row.find_all('span', attrs={'id':re.compile(r'hdnJC')})]
+
+        # find all <a> tags
+        a_list = row.find_all('a', href=True) # find_all(['a', 'h1'])
+
+        hlink, vacancy = [], []
+        # select 'href' and text from <a> tag
+        for a in a_list:
+            if a.text:
+                # hyperlink of ad
+                hlink.append(a['href'])
+                # job position
+                vacancy.append(a.text)
+        # hlink = [a['href'] for a in a_list if a.text]
 
         # extract required url using regex (start - "/employer", end - "jsp")
         # hlink is a list with duplicate urls
@@ -74,15 +107,43 @@ def get_all_links():
 
         # Add url to hyperlinks
         hyperlinks.append(req_url)
-        
-    # mod_hyperlinks = [link.replace(' ', '%20') for link in words]
-    return hyperlinks
+
+        # Add information to job_details
+        job_details.append({
+            "company":company_name[0],
+            "vacancy":vacancy[0],
+            "ref_number":ref_num[0],
+            "ad_url":base_url + req_url})
+
+    job_details_df = pd.DataFrame(job_details)
+
+    return job_details_df
     
+def save_general_details(job_details_df):
+
+    # Save ad image & add image name to df
+    job_details_df['ad_img'] = job_details_df.apply(get_job_ad, axis=1)
+    
+    # checking whether cache path exists
+    if os.path.exists(details_cache_path):
+        # save dataframe
+        job_details_df.to_csv(details_cache_path + 'job_details.csv', index = False)
+    # if not make non-existing intermediate directory
+    else:
+        os.makedirs(details_cache_path)
+        job_details_df.to_csv(details_cache_path + 'job_details.csv', index = False)
+
+    return "job details cached"
+
 
 def main():
-    # print(get_job_ad("34af5f05-7e46-46d1-b7bd-53a4ec1d1c3b"))
-    hyperlink_array = get_all_links()
-    print(get_job_ad(hyperlink_array))
+    import time
+    start_time = time.time()
+
+    jobs_df = get_general_details()
+    print(save_general_details(jobs_df))
+
+    print((time.time() - start_time))
 
 if __name__ == "__main__":
     main()
