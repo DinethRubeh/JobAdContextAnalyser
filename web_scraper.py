@@ -57,7 +57,6 @@ def get_all_links():
     # table = soup.find('table', attrs={'class':'tbldata_2 vbfa-table'})
 
     ad_rows = soup.find_all('tr', attrs={'valign':'top'})
-    # .find_all("a", href=True)
     # print(ad_rows)
     
     hyperlinks = []
