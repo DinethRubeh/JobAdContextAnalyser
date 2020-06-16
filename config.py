@@ -7,7 +7,7 @@ sub_url = "http://www.topjobs.lk/applicant/vacancybyfunctionalarea.jsp?FA=SDQ&js
 # image cache path
 image_path = 'images/'
 
-# ad details (text) cache path
+# ad details (job details, text from image) cache path
 ad_details_path = 'ad_details/'
 
 # tesseract.exe path
