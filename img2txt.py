@@ -10,6 +10,12 @@ from glob import glob
 # tesseract.exe path
 pytesseract.pytesseract.tesseract_cmd = config.tess_path
 
+# load job_details csv
+job_details_df = pd.read_csv(config.ad_details_path + 'job_details.csv')
+
+# create ref_number to vacancy dict from job_details_df
+vacancy_dict = dict(zip(job_details_df['ref_number'].astype(str), job_details_df['vacancy']))
+
 # image pre-processing to improve accuracy
 def image_prep(img_obj):
     ''' To-do: test and apply suitable pre-processing techniques using cv2
@@ -40,33 +46,34 @@ def ads2text():
     for e in ['*.png', '*.jpg', '*.gif']:
         all_images.extend(glob(config.image_path + e)[:5])
     
-    text_dict = {}
+    text_dict = []
     # iterate and convert image to text 
     for image_path in all_images:
         # get ref number from image_path string (\d -> digits)
         ref_num = re.findall(r'(\d+)',image_path)[0]
+        # remove 0000 part
+        refn = re.sub("0000","",ref_num)
+
+        # get job position
+        vacancy = vacancy_dict[refn]
 
         # add to text_dict
-        text_dict[ref_num] = image2text(image_path)
-
-    # dict to df
-    text_df = pd.DataFrame(list(text_dict.items()), columns=['ref_number', 'description'])
-    # print(text_df)
+        text_dict.append({
+            "position": vacancy,
+            "description": image2text(image_path)
+        })
 
     # text details cache path
     details_cache_path = config.ad_details_path
 
-    # checking whether cache path exists, if not make non-existing intermediate directory
+    # checking whether cache path exists
     if os.path.exists(details_cache_path):
-        # save df as a csv 
-        text_df.to_csv(details_cache_path + 'job_description.csv', index = False)
         # jsonify and save json
         with open(details_cache_path + 'details.json', 'w', encoding='utf-8') as f:
             json.dump(text_dict, f, ensure_ascii=False, indent=4)
     else:
+        # make non-existing intermediate directory
         os.makedirs(details_cache_path)
-        text_df.to_csv(details_cache_path + 'job_description.csv', index = False)
-        
         with open(details_cache_path + 'details.json', 'w', encoding='utf-8') as f:
             json.dump(text_dict, f, ensure_ascii=False, indent=4)
 
