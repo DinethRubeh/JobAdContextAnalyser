@@ -1,4 +1,5 @@
 __pycache__/config.cpython-36.pyc
 .vscode/settings.json
 images/
-img_test/
+data/
+*.pyc

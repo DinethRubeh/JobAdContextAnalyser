@@ -7,13 +7,17 @@ from sklearn.feature_extraction.text import TfidfTransformer
 
 # some mild pre-processing
 def text_pre_process(txt):
-    
+
     # lowercase
     txt = txt.lower()
-    # remove digits(\d) and special characters(\W)
-    txt = re.sub("(\\d|\\W)"," ",txt)
+    # remove newline
+    txt = re.sub("(\n+)","",txt)
+    # replace brackets ( (),[] ) with whitespace
+    txt = re.sub("[\[,\],\(,\)]"," ",txt)
+    # remove mutiple whitespace
+    mod_txt = ' '.join(txt.split())
 
-    return txt
+    return mod_txt
 
 # helper functions
 def sort_coo(coo_matrix):
@@ -81,6 +85,10 @@ def test_keywords(count_vectorizor,tfidf_transformer):
     # load test data
     test_df = pd.read_json(config.ad_details_path + 'test_details.json', orient='records')
 
+    # remove new line string
+    test_df["description"] = test_df.description.str.replace('\n',' ', regex=True)
+    print(test_df.head(5))
+
     # merge position and description (textual data)
     test_df['text'] = test_df['position'] + test_df['description']
     # apply text pre procesing to each row
@@ -93,7 +101,7 @@ def test_keywords(count_vectorizor,tfidf_transformer):
     feature_names = count_vectorizor.get_feature_names()
 
     # get sample test document
-    test_doc = test_docs[1]
+    test_doc = test_docs[2]
 
     test_doc_vec = count_vectorizor.transform([test_doc])
 
@@ -102,7 +110,7 @@ def test_keywords(count_vectorizor,tfidf_transformer):
 
     sorted_items = sort_coo(req_tf_idf_vec.tocoo())
 
-    keywords = extract_topn_from_vector(feature_names,sorted_items,25)
+    keywords = extract_topn_from_vector(feature_names,sorted_items,50)
 
     print("\n======Doc========")
     print(test_doc)
@@ -113,6 +121,7 @@ def test_keywords(count_vectorizor,tfidf_transformer):
 def main():
     cv, tfidf = job_keywords()
     print(test_keywords(cv,tfidf))
+    # print(text_pre_process(""))
 
 if __name__ == "__main__":
     main()
