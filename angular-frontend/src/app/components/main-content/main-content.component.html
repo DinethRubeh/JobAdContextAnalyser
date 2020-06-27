@@ -1,0 +1,10 @@
+<div class="job-details-card" *ngFor="let jobDetail of jobDetails">
+    <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">{{ jobDetail.vacancy }}</div>
+    <div>Company: {{ jobDetail.company }}</div>
+    <div class="row" style="width: 100%;">
+        <div class="col">Ref. Number: {{ jobDetail.ref_number }}</div>
+        <div class="col">
+            <a href="{{ jobDetail.ad_url }}"><button class="details-btn" style="float: right;">More Details</button></a>
+        </div>
+    </div>
+</div>

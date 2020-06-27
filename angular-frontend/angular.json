@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "angular-frontend": {
@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "angular-frontend"
+    }
+  },
+  "defaultProject": "angular-frontend",
+  "cli": {
+    "analytics": "57bb55b8-c268-4f03-b474-246c05cbe6b1"
+  }
 }
