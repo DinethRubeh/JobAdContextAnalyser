@@ -15,6 +15,7 @@ To run the flask server, use the following commands:
 ```
 The backend server will now be running in the background. To start the frontend, use the following commands:
 ```
+  npm install -g @angular/cli
   cd angular-frontend
   ng serve -o
 ```
