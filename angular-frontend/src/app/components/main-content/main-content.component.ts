@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { JobDetailsService } from 'src/app/services/job-details.service';
 import { JobDetails } from 'src/app/models/JobDetails';
 
@@ -9,14 +9,10 @@ import { JobDetails } from 'src/app/models/JobDetails';
 })
 export class MainContentComponent implements OnInit {
 
-  jobDetails: JobDetails[];
+  @Input() jobDetails:JobDetails[];
 
-  constructor(private jobDetailsService: JobDetailsService) { }
+  constructor() { }
 
-  ngOnInit(): void {
-    this.jobDetailsService.getJobDetails().subscribe(data => {
-      this.jobDetails = data.object.jobDetails;
-    });
-  }
+  ngOnInit(): void {  }
 
 }

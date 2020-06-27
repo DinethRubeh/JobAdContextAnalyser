@@ -1,6 +1,27 @@
+.search-card{
+    background-color: rgb(0, 95, 133);
+    color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.search-card input{
+    border: none;
+    outline: none;
+}
+
 .hits-card{
     background-color: rgb(179, 17, 25);
     color: white;
     text-align: center;
     padding: 10px 0;
+}
+
+.search-btn{
+    border: none;
+    outline: none;
+    background-color: rgb(3, 51, 70);
+    color: white;
+    border-radius: 5px;
+    padding: 3px;
 }

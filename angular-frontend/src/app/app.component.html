@@ -4,7 +4,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-4"><app-stats></app-stats></div>
-    <div class="col-8"><app-main-content></app-main-content></div>
+    <div class="col-4"><app-stats (jobDetails)="displaySearchResults($event)"></app-stats></div>
+    <div class="col-8"><app-main-content [jobDetails]="jobDetails"></app-main-content></div>
   </div>
 </div>

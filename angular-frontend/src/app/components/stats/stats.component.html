@@ -1,3 +1,19 @@
+<div class="search-card">
+    <form (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-10">
+                <input type="text" style="width:100%;"
+                    placeholder="Search keyword" 
+                    [(ngModel)]="keyword" 
+                    name="keyword">
+            </div>
+            <div class="col-2">
+                <button type="submit" class="search-btn" style="float: right;">Search</button>
+            </div>
+        </div>
+    </form>   
+</div>
+
 <div class="hits-card">
     <p style="font-size: 18px;">Found {{ hits }} results!</p> 
 </div>
