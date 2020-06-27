@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask import request
 from flask_cors import CORS,cross_origin
 
@@ -18,7 +18,7 @@ def home():
     return 'Hello, this is topjobs context analyzer'
 
 # Get all job details for the given keyword
-@jobapp.route('/search/')
+@jobapp.route('/search/')   # eg. /search/?keyWord=python
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def job_search():
     try:
@@ -26,13 +26,15 @@ def job_search():
         # get job details related to key_word
         job_details = get_jobs_for_key_word(key_word.lower())
 
-        return json.dumps({
+        return jsonify({
             "code":0,
             "message":"success",
             "object":{
                 "jobDetails":job_details
             } 
         })
+
+        
     
     except Exception as e:
         return json.dumps({
