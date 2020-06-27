@@ -4,7 +4,7 @@ Job Advertisement Context Analyser for local recruitment website topjobs.lk
 ### Prerequisites
 Create a new virtual environment and install the dependencies from the requirements.txt file.
 ```
-pip install requirements.txt
+  pip install requirements.txt
 ```
 
 ### Run the service
