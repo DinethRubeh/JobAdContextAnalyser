@@ -8,11 +8,12 @@ import { Observable } from 'rxjs';
 })
 export class JobDetailsService {
 
-  url = "http://127.0.0.1:5000/search/?keyWord=php"
+  url = "http://127.0.0.1:5000/search/?keyWord="
 
   constructor(private http:HttpClient) { }
 
-  getJobDetails():Observable<MainResponse>{
-    return this.http.get<MainResponse>(this.url)
+  getJobDetails(keyword:string):Observable<MainResponse>{
+    let search_url = `${this.url}${keyword}`
+    return this.http.get<MainResponse>(search_url)
   }
 }
