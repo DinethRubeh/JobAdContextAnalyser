@@ -6,6 +6,8 @@ Create a new virtual environment and install the dependencies from the requireme
 ```
 pip install requirements.txt
 ```
+
+### Run the service
 To run the flask server, use the following commands:
 ```
   set FLASK_APP=app.py
