@@ -18,3 +18,13 @@
     text-decoration: none;
     color: white;
 }
+
+.expand-btn{
+    background-color: rgb(22, 44, 78);
+    color: white;
+    padding: 30x;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    margin: 0 auto;
+}

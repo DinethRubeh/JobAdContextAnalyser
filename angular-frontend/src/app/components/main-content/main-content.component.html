@@ -1,10 +1,15 @@
-<div class="job-details-card" *ngFor="let jobDetail of jobDetails">
+<div class="job-details-card" *ngFor="let jobDetail of limitedJobDetails">
     <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">{{ jobDetail.vacancy }}</div>
     <div>Company: {{ jobDetail.company }}</div>
     <div class="row" style="width: 100%;">
         <div class="col">Ref. Number: {{ jobDetail.ref_number }}</div>
         <div class="col">
-            <a href="{{ jobDetail.ad_url }}"><button class="details-btn" style="float: right;">More Details</button></a>
+            <a href="{{ jobDetail.ad_url }}" target="_blank">
+                <button class="details-btn" style="float: right;">More Details</button>
+            </a>
         </div>
     </div>
+</div> 
+<div style="text-align: center;">
+    <button class="expand-btn" (click)="showAll()" *ngIf="not_expanded">See More</button>
 </div>

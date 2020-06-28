@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { MainResponse } from '../models/MainResponse';
 import { Observable } from 'rxjs';
 
@@ -8,7 +8,9 @@ import { Observable } from 'rxjs';
 })
 export class JobDetailsService {
 
-  url = "http://127.0.0.1:5000/search/?keyWord="
+  url = "https://job-ad-context-analyser.herokuapp.com/search/?keyWord="
+
+  response:MainResponse;
 
   constructor(private http:HttpClient) { }
 
