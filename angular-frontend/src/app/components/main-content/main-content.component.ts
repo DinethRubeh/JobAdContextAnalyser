@@ -10,9 +10,24 @@ import { JobDetails } from 'src/app/models/JobDetails';
 export class MainContentComponent implements OnInit {
 
   @Input() jobDetails:JobDetails[];
+  limitedJobDetails:JobDetails[] = [];
+  not_expanded:boolean;
 
   constructor() { }
 
-  ngOnInit(): void {  }
+  ngOnChanges(){
+    this.limitedJobDetails= (this.jobDetails) ? this.jobDetails.slice(0,4): this.jobDetails;
+    if(this.jobDetails.length > 4)
+      this.not_expanded = true;
+  }
+
+  ngOnInit(): void { 
+    this.not_expanded = false;
+  }
+
+  showAll(){
+    this.limitedJobDetails = this.jobDetails;
+    this.not_expanded = false;
+  }
 
 }

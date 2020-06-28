@@ -42,6 +42,10 @@ def job_search():
             "message":str(e)
         })
 
+if __name__ == '__main__':
+    # Threaded option to enable multiple instances for multiple user access support
+    jobapp.run(threaded=True, port=8080)
+
 # start the web scraping process and save job details
 # @jobapp.route('/topjobs/scrape')
 # @cross_origin(origin='*',headers=['Content-Type','Authorization'])
