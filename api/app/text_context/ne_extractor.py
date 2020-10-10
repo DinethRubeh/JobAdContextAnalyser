@@ -1,11 +1,12 @@
-import spacy
-from spacy import displacy
 from collections import Counter
+
+import pandas as pd
+import spacy
 import en_core_web_sm
+from spacy import displacy
 
 import config
-import pandas as pd
-from job_context import text_pre_process
+from app.text_context.job_context import text_pre_process
 
 nlp = en_core_web_sm.load()
 

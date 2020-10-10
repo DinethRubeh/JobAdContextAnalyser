@@ -1,9 +1,11 @@
 import os
 import re
-import config
+
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
+
+import config
 
 # some mild pre-processing
 def text_pre_process(txt):
@@ -13,7 +15,7 @@ def text_pre_process(txt):
     # remove newline
     txt = re.sub("(\n+)","",txt)
     # replace brackets ( (),[] ) with whitespace
-    txt = re.sub("[\[,\],\(,\)]"," ",txt)
+    txt = re.sub(r"[\[,\],\(,\)]"," ",txt)
     # remove mutiple whitespace
     mod_txt = ' '.join(txt.split())
 

@@ -1,10 +1,13 @@
 import os
 import re
-import config
 import requests
-import pandas as pd
 import urllib.request
+
+import pandas as pd
 from bs4 import BeautifulSoup
+
+import config
+from app.img_to_text.img2txt import ads2text, job_wth_description
 
 # base url to be added as a prefix to the image src
 base_url = config.url
@@ -135,6 +138,17 @@ def save_general_details(job_details_df):
 
     return "job details cached"
 
+def start_scrape():
+    # Scrape website and extract required information of each job to a df
+    jobs_df = get_general_details()
+    # save job ad images and save the job details dataframe to a csv
+    save_general_details(jobs_df)
+    # extract text from all images and save as json
+    ads2text()
+    # add the extracted text (job description) to the job details csv
+    job_wth_description()
+
+    return "Scraping process finished"
 
 def main():
     jobs_df = get_general_details()
