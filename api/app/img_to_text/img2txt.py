@@ -1,13 +1,14 @@
 import os
 import re
 import json
-import config
+
 import pytesseract
 import pandas as pd
 from PIL import Image
 from glob import glob
 
-from job_context import text_pre_process
+import config
+from app.text_context.job_context import text_pre_process
 
 # tesseract.exe path
 pytesseract.pytesseract.tesseract_cmd = config.tess_path
@@ -112,7 +113,7 @@ def job_wth_description():
 
 def main():
     # req_dict = ads2text()
-    print(job_wth_description(""))
+    print(job_wth_description())
 
 if __name__ == "__main__":
     main()

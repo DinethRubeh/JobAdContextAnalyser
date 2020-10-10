@@ -1,6 +1,7 @@
 import os
-import config
 import pandas as pd
+
+import config
 
 # load full_job_details csv
 job_details_df = pd.read_csv(config.ad_details_path + 'job_full_details.csv')

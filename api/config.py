@@ -3,12 +3,11 @@ url = "http://www.topjobs.lk/"
 
 # website url for each job category
 sub_url = "http://www.topjobs.lk/applicant/vacancybyfunctionalarea.jsp?FA=SDQ&jst=OPEN"
-
 # image cache path
-image_path = 'images/'
+image_path = 'data/images/'
 
 # ad details (job details, text from image) cache path
-ad_details_path = 'ad_details/'
+ad_details_path = 'data/ad_details/'
 
 # tesseract.exe path
 tess_path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"

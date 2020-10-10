@@ -1,9 +1,11 @@
 import os
 import re
-import config
 import requests
 import urllib.request
+
 from bs4 import BeautifulSoup
+
+import config
 
 # github url
 # https://github.com/sindresorhus/awesome#big-data
